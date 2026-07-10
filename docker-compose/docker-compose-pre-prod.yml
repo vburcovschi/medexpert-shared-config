@@ -1,0 +1,104 @@
+services:
+
+  med-backend:
+    build:
+      context: ../backend
+      dockerfile: Dockerfile-prod
+    image:  vburcovschi/medexpert:backend-dev.${APP_VERSION:?Set APP_VERSION (Docker/.env or --env-file appversion.env)}
+    container_name: medexpert-backend-pre-prod
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - SPRING_CACHE_TYPE=none
+      - SPRING_DATA_REDIS_HOST=med-redis
+      - SPRING_DATA_REDIS_PORT=6379
+      - APP_CORS_ALLOWED_ORIGIN=https://medexpert.caa.md
+      - SPRINGDOC_API_DOCS_ENABLED=true
+      - SPRINGDOC_SWAGGER_UI_ENABLED=true
+      - APP_SWAGGER_ENABLED=true
+#    depends_on:
+#      - med-redis
+    env_file:
+      - "D:/Dropbox/JAVA Source/medexpert/Docker/config/db_secret.env"
+      - "D:/Dropbox/JAVA Source/medexpert/Docker/config/ssl_secret.env"
+    ports:
+      - "8443:8443"
+      - "8082:8082"
+    restart: unless-stopped
+    networks:
+      - medexpert-net-pre-prod
+    volumes:
+      - "D:/Dropbox/JAVA Source/medexpert/backend/src/main/resources/application-prod.properties:/app/application.properties:ro"
+      - "D:/Dropbox/JAVA Source/medexpert/Docker/SSL/backend-keystore.p12:/etc/ssl/backend-keystore.p12:ro"
+#
+#  med-redis:
+#    image: redis:7-alpine
+#    container_name: medexpert-redis-pre-prod
+#    restart: unless-stopped
+#    ports:
+#      - "6379:6379"
+#    networks:
+#      - medexpert-net-pre-prod
+
+  med-prometheus:
+    image: prom/prometheus:latest
+    container_name: medexpert-prometheus-pre-prod
+    restart: unless-stopped
+    ports:
+      - "9090:9090"
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    volumes:
+      - "D:/Dropbox/JAVA Source/medexpert/prometheus/prometheus-pre-prod.yml:/etc/prometheus/prometheus.yml:ro"
+    depends_on:
+      - med-backend
+    networks:
+      - medexpert-net-pre-prod
+
+  med-grafana:
+    image: grafana/grafana:latest
+    container_name: medexpert-grafana-pre-prod
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin123
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_SERVER_ROOT_URL=http://localhost:3000
+    volumes:
+      - "D:/Dropbox/JAVA Source/medexpert/grafana/pre-prod-provisioning:/etc/grafana/provisioning:ro"
+      - "D:/Dropbox/JAVA Source/medexpert/grafana/pre-prod-dashboards:/var/lib/grafana/pre-prod-dashboards:ro"
+    depends_on:
+      - med-prometheus
+    networks:
+      - medexpert-net-pre-prod
+
+  med-frontend:
+    build:
+      context: ../frontend/app
+      dockerfile: Dockerfile-pre-prod
+      args:
+        NODE_ENV: production
+        VITE_APP_VERSION: ${APP_VERSION:?Set APP_VERSION (Docker/.env or --env-file appversion.env)}
+    image: vburcovschi/medexpert:frontend-dev.${APP_VERSION:?Set APP_VERSION (Docker/.env or --env-file appversion.env)}
+    container_name: medexpert-frontend-pre-prod
+    ports:
+      - "80:8080"
+      - "443:8443"
+    environment:
+      API_URL: "/api/v1"
+    depends_on:
+      - med-backend
+    restart: unless-stopped
+    networks:
+      - medexpert-net-pre-prod
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    volumes:
+      - "D:/Dropbox/JAVA Source/medexpert/Docker/SSL:/etc/nginx/ssl:ro"
+
+networks:
+  medexpert-net-pre-prod:
+    driver: bridge

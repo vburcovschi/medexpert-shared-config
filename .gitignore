@@ -1,0 +1,3 @@
+﻿# Any local overrides or temporary files
+*.swp
+.DS_Store
