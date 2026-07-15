@@ -2,7 +2,7 @@
 
 Shared (public) configuration for MedExpert frontend and backend.
 
-**⚠️ IMPORTANT: This repo contains NO SECRETS**
+**⚠️ IMPORTANT: This repo contains NO SECRETS****
 
 ## Contents
 
