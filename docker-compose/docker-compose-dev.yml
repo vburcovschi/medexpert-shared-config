@@ -14,8 +14,8 @@ services:
       - SPRINGDOC_SWAGGER_UI_ENABLED=true
       - APP_SWAGGER_ENABLED=true
     env_file:
-      - config/db_secret.env
-      - config/ssl_secret.env
+      - ../config/db_secret.env
+      - ../config/ssl_secret.env
     ports:
       - "8443:8443"
       - "8081:8081"
