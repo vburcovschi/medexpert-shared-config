@@ -2,7 +2,7 @@ services:
 
   med-backend:
     build:
-      context: ../../../../../backend
+      context: ../backend
       dockerfile: Dockerfile-dev
     image:  vburcovschi/medexpert:backend-dev.${APP_VERSION:?Set APP_VERSION (Docker/.env or --env-file appversion.env)}
     container_name: medexpert-backend-dev
@@ -14,8 +14,8 @@ services:
       - SPRINGDOC_SWAGGER_UI_ENABLED=true
       - APP_SWAGGER_ENABLED=true
     env_file:
-      - ../../../../../Docker/config/db_secret.env
-      - ../../../../../Docker/config/ssl_secret.env
+      - ../config/db_secret.env
+      - ../config/ssl_secret.env
     ports:
       - "8443:8443"
       - "8081:8081"
@@ -30,7 +30,7 @@ services:
 
   med-frontend:
     build:
-      context: ../../../../../frontend/app
+      context: ../frontend/app
       dockerfile: Dockerfile-dev
       args:
         NODE_ENV: development

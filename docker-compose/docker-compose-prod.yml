@@ -18,8 +18,8 @@ services:
 #    depends_on:
 #      - med-redis
     env_file:
-      - config/db_secret.env
-      - config/ssl_secret.env
+      - ../config/db_secret.env
+      - ../config/ssl_secret.env
     ports:
       - "8443:8443"
       - "8082:8082"
@@ -27,8 +27,8 @@ services:
     networks:
       - medexpert-net-prod
     volumes:
-      - ./config/application-prod.properties:/app/application.properties:ro
-      - ./SSL/backend-keystore.p12:/etc/ssl/backend-keystore.p12:ro
+      - ../config/application-prod.properties:/app/application.properties:ro
+      - ../SSL/backend-keystore.p12:/etc/ssl/backend-keystore.p12:ro
 
 #  med-redis:
 #    image: redis:7-alpine
