@@ -103,6 +103,7 @@ services:
       - "443:8443"
     environment:
         API_URL: "/api/v1"
+        APP_VERSION: "${APP_VERSION:?Set APP_VERSION (Docker/shared/appversion.env or --env-file appversion.env)}"
     extra_hosts:
       - "backend-medexpert.caa.md:host-gateway"
     depends_on:
