@@ -27,7 +27,7 @@ services:
     networks:
       - medexpert-net-pre-prod
     volumes:
-      - "../backend/src/main/resources/application-prod.properties:/app/application.properties:ro"
+      - "../backend/src/main/resources:/app/config:ro"
       - "../SSL/backend-keystore.p12:/etc/ssl/backend-keystore.p12:ro"
 #
 #  med-redis:

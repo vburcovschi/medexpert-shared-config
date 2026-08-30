@@ -24,7 +24,7 @@ services:
     networks:
       - medexpert-net-dev
     volumes:
-      - "D:/Dropbox/JAVA Source/medexpert/backend/src/main/resources/application-dev.properties:/app/application.properties:ro"
+      - "D:/Dropbox/JAVA Source/medexpert/backend/src/main/resources:/app/config:ro"
       - "D:/Dropbox/JAVA Source/medexpert/Docker/SSL/backend-keystore.p12:/etc/ssl/backend-keystore.p12:ro"
 
 
