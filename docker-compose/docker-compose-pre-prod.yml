@@ -15,6 +15,10 @@ services:
       - SPRINGDOC_API_DOCS_ENABLED=true
       - SPRINGDOC_SWAGGER_UI_ENABLED=true
       - APP_SWAGGER_ENABLED=true
+      - DB_HOST=10.0.0.121
+      - DB_PORT=18891
+      - DB_DATABASE=AMS
+      - DB_INSTANCE_NAME=SQLSERVER2016JVM
 #    depends_on:
 #      - med-redis
     env_file:
